@@ -23,8 +23,11 @@ module.exports = {
       price: {
         type: Sequelize.INTEGER
       },
-      CategotyId: {
+      CategoryId: {
         type: Sequelize.INTEGER
+      },
+      CloudinaryId: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

@@ -130,7 +130,7 @@ const deleteProduct = async (req, res) => {
             }
         })
 
-        await cloudinary.uploader.destroy(product.CloudinaryId);
+        await cloudinary.uploader.destroy(product.CloudinaryId)
 
         await Products.destroy({
             where: {

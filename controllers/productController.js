@@ -33,7 +33,7 @@ const getProduct = async (req, res) => {
                 attributes: ['name']
             },
             where: {
-                id: req.params.id
+                slug: req.params.slug
             }
         })
 
@@ -53,7 +53,7 @@ const getProduct = async (req, res) => {
 const createProduct = async (req, res) => {
     try {
         const result = await cloudinary.uploader.upload(req.file.path)
-        const { name, description, price, CategoryId } = req.body
+        const { name, description, price, CategoryId, stock } = req.body
         const userId = req.user.id
         const image = result.secure_url
         const cloudId = result.public_id
@@ -68,11 +68,14 @@ const createProduct = async (req, res) => {
         await Products.create({
             ProfileId: profileId,
             name,
+            slug: name.toLowerCase().split(' ').join('-'),
             description,
             CategoryId,
             price,
+            stock,
             image,
-            CloudinaryId: cloudId
+            CloudinaryId: cloudId,
+            isAvailable: true
         })
 
         res.status(201).json({
@@ -89,10 +92,10 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const { name, description, price, CategoryId } = req.body
+        const { name, description, price, stock, CategoryId } = req.body
         const product = await Products.findOne({
             where: {
-                id: req.params.id
+                slug: req.params.slug
             }
         })
 
@@ -103,9 +106,11 @@ const updateProduct = async (req, res) => {
 
         await product.update({
             name,
+            slug: name.toLowerCase().split(' ').join('-'),
             description,
             CategoryId,
             price,
+            stock,
             image,
             CloudinaryId: cloudId
         })
@@ -126,7 +131,7 @@ const deleteProduct = async (req, res) => {
     try {
         const product = await Products.findOne({
             where: {
-                id: req.params.id
+                id: req.params.slug
             }
         })
 
@@ -134,7 +139,7 @@ const deleteProduct = async (req, res) => {
 
         await Products.destroy({
             where: {
-                id: product.id
+                slug: product.slug
             }
         })
 

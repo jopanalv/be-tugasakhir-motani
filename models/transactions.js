@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      this.belongsTo(models.Profiles);
+      this.belongsTo(models.Products);
     }
   }
   Transactions.init({
@@ -18,6 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     SellerId: DataTypes.INTEGER,
     ProductId: DataTypes.INTEGER,
     offer_price: DataTypes.INTEGER,
+    start_rent: DataTypes.DATE, 
+    duration: DataTypes.INTEGER,
     status: DataTypes.STRING
   }, {
     sequelize,

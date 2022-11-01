@@ -11,12 +11,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.Users);
+      this.hasMany(models.Products, {
+        foreignKey: 'ProfileId'
+      });
+      this.hasMany(models.Transactions, {
+        foreignKey: 'BuyerId'
+      });
     }
   }
   Profiles.init({
     UserId: DataTypes.INTEGER,
     name: DataTypes.STRING,
-    photo: DataTypes.STRING,
+    image: DataTypes.STRING,
     city: DataTypes.STRING,
     address: DataTypes.STRING,
     phone: DataTypes.STRING,

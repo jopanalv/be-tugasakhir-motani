@@ -11,6 +11,9 @@ module.exports = {
       ProfileId: {
         type: Sequelize.INTEGER
       },
+      slug: {
+        type: Sequelize.STRING
+      },
       image: {
         type: Sequelize.STRING
       },
@@ -23,11 +26,17 @@ module.exports = {
       price: {
         type: Sequelize.INTEGER
       },
+      stock: {
+        type: Sequelize.INTEGER
+      },
       CategoryId: {
         type: Sequelize.INTEGER
       },
       CloudinaryId: {
         type: Sequelize.STRING
+      },
+      isAvailable: {
+        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,

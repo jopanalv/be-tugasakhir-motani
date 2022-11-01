@@ -20,6 +20,12 @@ module.exports = {
       offer_price: {
         type: Sequelize.INTEGER
       },
+      start_rent: {
+        type: Sequelize.DATE
+      },
+      duration: {
+        type: Sequelize.INTEGER
+      },
       status: {
         type: Sequelize.STRING
       },

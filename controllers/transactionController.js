@@ -1,4 +1,5 @@
-const { Transactions, Profiles, Products } = require('../models');
+const { Transactions, Profiles, Products, Categories } = require('../models');
+const cloudinary = require('../utils/cloudinary');
 
 const statusTrans = {
     Pending: 'pending',
@@ -8,22 +9,95 @@ const statusTrans = {
     Completed: 'completed'
 }
 
+const getAllTransaction = async (req, res) => {
+    try {
+        const transactions = await Transactions.findAll({
+            include: [
+                {
+                    model: Products,
+                    required: true,
+                    include: {
+                        model: Categories,
+                        required: true,
+                        attributes: ['name']
+                    }
+                },
+                {
+                    model: Profiles,
+                    required: true,
+                }
+            ]
+        })
+
+        res.status(200).json({
+            statusCode: 200,
+            message: 'Get all transactions success!',
+            data: transactions
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            statusCode: 500,
+            message: error.message
+        })
+    }
+}
+
+const getTransaction = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        const transaction = await Transactions.findOne({
+            include: [
+                {
+                    model: Products,
+                    required: true,
+                    include: {
+                        model: Categories,
+                        required: true,
+                        attributes: ['name']
+                    }
+                },
+                {
+                    model: Profiles,
+                    required: true,
+                }
+            ],
+            where: {
+                id
+            }
+        })
+
+        res.status(200).json({
+            statusCode: 200,
+            message: 'Get transaction success!',
+            data: transaction
+        })
+    } catch (error) {
+        res.status(500).json({
+            statusCode: 500,
+            message: error.message
+        })
+    }
+}
+
 const createTransaction = async (req, res) => {
-    const BuyerId = req.user.id
-    const { offer_price, start_rent, duration } = req.body
+    const result = await cloudinary.uploader.upload(req.file.path)
+    const { buyerId, offer_price, start_rent, duration } = req.body
+    const ktp = result.secure_url
+    const cloudId = result.public_id
     const status = statusTrans.Pending
-    const ProductId = req.params.id
 
     try {
         const buyer = await Profiles.findOne({
             where: {
-                UserId: BuyerId
+                UserId: buyerId
             }
         })
 
         const product = await Products.findOne({
             where: {
-                id: ProductId
+                slug: req.params.slug
             }
         })
 
@@ -34,13 +108,15 @@ const createTransaction = async (req, res) => {
             })
         } else {
             const transaction = await Transactions.create({
-                BuyerId,
+                ProfileId: buyer.id,
                 SellerId: product.ProfileId,
-                ProductId,
+                ProductId: product.id,
                 offer_price,
                 start_rent,
                 duration,
-                status
+                ktp,
+                status,
+                CloudinaryId: cloudId
             })
 
             res.status(201).json({
@@ -165,4 +241,4 @@ const completeTransaction = async (req, res) => {
     }
 }
 
-module.exports = { createTransaction, acceptTransaction, rejectTransaction, cancelTransaction, completeTransaction }
+module.exports = { getAllTransaction, getTransaction, createTransaction, acceptTransaction, rejectTransaction, cancelTransaction, completeTransaction }

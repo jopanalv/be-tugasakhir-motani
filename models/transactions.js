@@ -15,13 +15,15 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Transactions.init({
-    BuyerId: DataTypes.INTEGER,
+    ProfileId: DataTypes.INTEGER,
     SellerId: DataTypes.INTEGER,
     ProductId: DataTypes.INTEGER,
     offer_price: DataTypes.INTEGER,
     start_rent: DataTypes.DATE, 
     duration: DataTypes.INTEGER,
-    status: DataTypes.STRING
+    ktp: DataTypes.STRING,
+    status: DataTypes.STRING,
+    CloudinaryId: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Transactions',

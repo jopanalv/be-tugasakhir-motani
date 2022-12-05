@@ -49,20 +49,20 @@ const getUser = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-    const { name, address, city, phone } = req.body;
-
     try {
+        const result = await cloudinary.uploader.upload(req.file.path)
+        const { name, address, city, phone } = req.body;
+
         const profile = await Profiles.findOne({
             where: {
                 UserId: req.params.id
             }
         })
 
-        if (profile.CloudinaryId) {
+        if (profile.CloudinaryId != null) {
             await cloudinary.uploader.destroy(profile.CloudinaryId)
         }
         
-        const result = await cloudinary.uploader.upload(req.file.path)
         const image = result.secure_url
         const cloudId = result.public_id
 
@@ -71,7 +71,7 @@ const updateUser = async (req, res) => {
             address,
             city,
             phone,
-            photo: image,
+            image,
             CloudinaryId: cloudId
         })
 
@@ -107,7 +107,9 @@ const deleteUser = async (req, res) => {
             }
         })
 
-        await cloudinary.uploader.destroy(profile.CloudinaryId)
+        if (profile.CloudinaryId !== null) {
+            await cloudinary.uploader.destroy(profile.CloudinaryId)
+        }
 
         res.status(200).json({
             statusCode: 200,

@@ -12,7 +12,7 @@ const register = async (req, res) => {
         if (isFormEmpty(req.body)) {
             res.status(400).json({
                 statusCode: 400,
-                message: 'Form cannot be empty!'
+                message: 'Form tidak boleh kosong!'
             })
         } else {
             const emailRegistered = await isEmailRegistered(email);
@@ -31,13 +31,13 @@ const register = async (req, res) => {
 
                 res.status(201).json({
                     statusCode: 201,
-                    message: 'Register success!',
+                    message: 'Register Berhasil!',
                     data: user
                 })
             } else {
                 res.status(400).json({
                     statusCode: 400,
-                    message: 'Email already exist!'
+                    message: 'Email sudah terdaftar!'
                 })
             }
         }
@@ -56,7 +56,7 @@ const login = async (req, res) => {
         if (isFormEmpty(req.body)) {
             res.status(400).json({
                 statusCode: 400,
-                message: 'Form cannot be empty!'
+                message: 'Form tidak boleh kosong!'
             })
         } else {
             const userInfo = await isEmailRegistered(email);
@@ -65,7 +65,7 @@ const login = async (req, res) => {
             if (!passwordMatch) {
                 res.status(401).json({
                     statusCode: 401,
-                    message: 'Email or Password doesnt match!'
+                    message: 'Email atau Password salah!'
                 })
             } else {
                 const user = { id: userInfo.id, email: userInfo.email, role: userInfo.role };
@@ -80,7 +80,7 @@ const login = async (req, res) => {
 
                 res.status(200).json({
                     statusCode: 200,
-                    message: 'Login success!',
+                    message: 'Login Berhasil!',
                     accessToken: accessToken
                 })
             }
@@ -88,7 +88,7 @@ const login = async (req, res) => {
     } catch (error) {
         res.status(400).json({
             statusCode: 400,
-            message: 'Email is not registered!'
+            message: 'Email tidak terdaftar!'
         })
     }
 }
@@ -100,14 +100,14 @@ const logout = async (req, res) => {
         if (!accessToken) {
             res.status(400).json({
                 statusCode: 400,
-                message: 'Login first!'
+                message: 'Login terlebih dahulu!'
             })
         }
 
         res.clearCookie('accessToken');
         res.status(200).json({
             statusCode: 200,
-            message: 'Logout success!'
+            message: 'Logout Berhasil!'
         })
     } catch (error) {
         res.status(500).json({

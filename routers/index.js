@@ -8,7 +8,7 @@ const { getAllProduct, getProduct, createProduct, updateProduct, deleteProduct }
 const { getAllUser, getUser, updateUser, deleteUser } = require('../controllers/userController');
 const { allCategories, createCategory, updateCategory, deleteCategory } = require('../controllers/categoryController');
 const { allBanners, createBanner, deleteBanner } = require('../controllers/bannerController');
-const { createTransaction, acceptTransaction, cancelTransaction, completeTransaction, rejectTransaction } = require('../controllers/transactionController');
+const { createTransaction, acceptTransaction, cancelTransaction, completeTransaction, rejectTransaction, getTransaction, getAllTransaction } = require('../controllers/transactionController');
 
 router.post('/register', register);
 router.post('/login', login);
@@ -34,10 +34,12 @@ router.get('/banners', allBanners);
 router.post('/banners', [auth(role.ADMIN), upload.single('image')], createBanner);
 router.delete('/banners/:id', auth(role.ADMIN), deleteBanner);
 
-router.post('/transaction/:id', auth(role.BUYER), createTransaction);
-router.put('/transaction/:id', auth(role.SELLER), acceptTransaction);
-router.put('/transaction/:id', auth(role.SELLER), cancelTransaction);
-router.put('/transaction/:id', auth(role.SELLER), completeTransaction);
-router.put('/transaction/:id', auth(role.SELLER), rejectTransaction);
+router.get('/transactions', getAllTransaction);
+router.get('/transaction/detail/:id', auth(role.SELLER), getTransaction);
+router.post('/transaction/:slug', [auth(role.BUYER), upload.single('ktp')], createTransaction);
+router.put('/transaction/accept/:id', auth(role.SELLER), acceptTransaction);
+router.put('/transaction/cancel/:id', auth(role.BUYER), cancelTransaction);
+router.put('/transaction/complete/:id', auth(role.SELLER), completeTransaction);
+router.put('/transaction/reject/:id', auth(role.SELLER), rejectTransaction);
 
 module.exports = router;

@@ -27,14 +27,19 @@ const getAllProduct = async (req, res) => {
 const getProduct = async (req, res) => {
     try {
         const products = await Products.findOne({
-            include: {
-                model: Categories,
-                required: true,
-                attributes: ['name']
-            },
             where: {
                 slug: req.params.slug
-            }
+            },
+            include: [
+                {
+                    model: Categories,
+                    required: true,
+                    attributes: ['name']
+                },
+                {
+                    model: Profiles,
+                }
+            ],
         })
 
         res.status(200).json({
@@ -65,7 +70,7 @@ const createProduct = async (req, res) => {
         })
         const profileId = profile.id
 
-        await Products.create({
+        const product = await Products.create({
             ProfileId: profileId,
             name,
             slug: name.toLowerCase().split(' ').join('-'),
@@ -81,6 +86,7 @@ const createProduct = async (req, res) => {
         res.status(201).json({
             statusCode: 201,
             message: 'Create product success!',
+            data: product
         })
     } catch (error) {
         res.status(403).json({
@@ -104,7 +110,7 @@ const updateProduct = async (req, res) => {
         const image = result.secure_url
         const cloudId = result.public_id
 
-        await product.update({
+        const prod = await product.update({
             name,
             slug: name.toLowerCase().split(' ').join('-'),
             description,
@@ -117,7 +123,8 @@ const updateProduct = async (req, res) => {
 
         res.status(200).json({
             statusCode: 200,
-            message: 'Update product success!'
+            message: 'Update product success!',
+            data: prod
         })
     } catch (error) {
         res.status(403).json({
@@ -131,7 +138,7 @@ const deleteProduct = async (req, res) => {
     try {
         const product = await Products.findOne({
             where: {
-                id: req.params.slug
+                slug: req.params.slug
             }
         })
 

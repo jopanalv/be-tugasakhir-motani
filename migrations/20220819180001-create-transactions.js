@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      BuyerId: {
+      ProfileId: {
         type: Sequelize.INTEGER
       },
       SellerId: {
@@ -26,7 +26,13 @@ module.exports = {
       duration: {
         type: Sequelize.INTEGER
       },
+      ktp: {
+        type: Sequelize.STRING
+      },
       status: {
+        type: Sequelize.STRING
+      },
+      CloudinaryId: {
         type: Sequelize.STRING
       },
       createdAt: {

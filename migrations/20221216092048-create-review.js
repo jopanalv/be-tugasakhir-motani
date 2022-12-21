@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Transactions', {
+    await queryInterface.createTable('Reviews', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,34 +11,13 @@ module.exports = {
       ProfileId: {
         type: Sequelize.INTEGER
       },
-      SellerId: {
-        type: Sequelize.INTEGER
-      },
       ProductId: {
         type: Sequelize.INTEGER
       },
-      offer_price: {
-        type: Sequelize.INTEGER
+      rate: {
+        type: Sequelize.DOUBLE
       },
-      start_rent: {
-        type: Sequelize.DATE
-      },
-      duration: {
-        type: Sequelize.INTEGER
-      },
-      ktp: {
-        type: Sequelize.STRING
-      },
-      isGuarantee: {
-        type: Sequelize.BOOLEAN
-      },
-      isPaid: {
-        type: Sequelize.BOOLEAN
-      },
-      status: {
-        type: Sequelize.STRING
-      },
-      CloudinaryId: {
+      comment: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -52,6 +31,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Transactions');
+    await queryInterface.dropTable('Reviews');
   }
 };

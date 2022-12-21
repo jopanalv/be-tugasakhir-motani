@@ -115,6 +115,8 @@ const createTransaction = async (req, res) => {
                 start_rent,
                 duration,
                 ktp,
+                isGuarantee: false,
+                isPaid: false,
                 status,
                 CloudinaryId: cloudId
             })
@@ -141,6 +143,17 @@ const acceptTransaction = async (req, res) => {
             where: {
                 id: id
             }
+        })
+
+        const product = await Products.findOne({
+            where: {
+                id: transaction.ProductId
+            }
+        })
+
+        // update product stock
+        await product.update({
+            stock: product.stock - 1
         })
 
         await transaction.update({
@@ -224,6 +237,17 @@ const completeTransaction = async (req, res) => {
             }
         })
 
+        // get product by id and update product stock
+        const product = await Products.findOne({
+            where: {
+                id: transaction.ProductId
+            }
+        })
+
+        await product.update({
+            stock: product.stock + 1
+        })
+
         await transaction.update({
             status: statusTrans.Completed
         })
@@ -241,4 +265,58 @@ const completeTransaction = async (req, res) => {
     }
 }
 
-module.exports = { getAllTransaction, getTransaction, createTransaction, acceptTransaction, rejectTransaction, cancelTransaction, completeTransaction }
+const acceptGuarantee = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        const transaction = await Transactions.findOne({
+            where: {
+                id: id
+            }
+        })
+
+        await transaction.update({
+            isGuarantee: true
+        })
+
+        res.status(200).json({
+            statusCode: 200,
+            message: 'Transaksi berhasil disetujui!',
+            data: transaction
+        })
+    } catch (error) {
+        res.status(500).json({
+            statusCode: 500,
+            message: error.message
+        })
+    }
+}
+
+const acceptPaid = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        const transaction = await Transactions.findOne({
+            where: {
+                id: id
+            }
+        })
+
+        await transaction.update({
+            isPaid: true
+        })
+
+        res.status(200).json({
+            statusCode: 200,
+            message: 'Transaksi berhasil disetujui!',
+            data: transaction
+        })
+    } catch (error) {
+        res.status(500).json({
+            statusCode: 500,
+            message: error.message
+        })
+    }
+}
+
+module.exports = { getAllTransaction, getTransaction, createTransaction, acceptTransaction, rejectTransaction, cancelTransaction, completeTransaction, acceptGuarantee, acceptPaid }

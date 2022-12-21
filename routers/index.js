@@ -8,7 +8,8 @@ const { getAllProduct, getProduct, createProduct, updateProduct, deleteProduct }
 const { getAllUser, getUser, updateUser, deleteUser } = require('../controllers/userController');
 const { allCategories, createCategory, updateCategory, deleteCategory } = require('../controllers/categoryController');
 const { allBanners, createBanner, deleteBanner } = require('../controllers/bannerController');
-const { createTransaction, acceptTransaction, cancelTransaction, completeTransaction, rejectTransaction, getTransaction, getAllTransaction } = require('../controllers/transactionController');
+const { createTransaction, acceptTransaction, cancelTransaction, completeTransaction, rejectTransaction, getTransaction, getAllTransaction, acceptGuarantee, acceptPaid } = require('../controllers/transactionController');
+const { createReview, getAllReviewById } = require('../controllers/reviewController');
 
 router.post('/register', register);
 router.post('/login', login);
@@ -41,5 +42,10 @@ router.put('/transaction/accept/:id', auth(role.SELLER), acceptTransaction);
 router.put('/transaction/cancel/:id', auth(role.BUYER), cancelTransaction);
 router.put('/transaction/complete/:id', auth(role.SELLER), completeTransaction);
 router.put('/transaction/reject/:id', auth(role.SELLER), rejectTransaction);
+router.put('/transaction/guarantee/:id', auth(role.SELLER), acceptGuarantee);
+router.put('/transaction/paid/:id', auth(role.SELLER), acceptPaid);
+
+router.get('/review/:id', getAllReviewById);
+router.post('/review', auth(role.BUYER), createReview);
 
 module.exports = router;

@@ -17,6 +17,9 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Transactions, {
         foreignKey: 'ProfileId'
       });
+      this.hasMany(models.Review, {
+        foreignKey: 'ProfileId'
+      });
     }
   }
   Profiles.init({
